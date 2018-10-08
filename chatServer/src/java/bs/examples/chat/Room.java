@@ -19,7 +19,15 @@ public class Room {
         return id;
     }
 
-    public void addUser(User user) {
+    public void inUser(User user) {
         this.users.add(user);
+    }
+
+    public void outUser(User user) {
+        this.users.remove(user);
+    }
+
+    public List<User> getUserList() {
+        return users;
     }
 }

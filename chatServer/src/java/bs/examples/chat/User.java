@@ -13,6 +13,7 @@ public class User {
     private String nickname;
     private PrintWriter pw;
     private BufferedReader br;
+    private Room currentRoom;
 
 
     public User(PrintWriter pw, BufferedReader br){
@@ -21,13 +22,29 @@ public class User {
         this.id = ++count;
     }
 
-
-
     public String getNickname() {
         return nickname;
     }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void enterRoom(Room room) {
+        this.currentRoom = room;
+        this.currentRoom.inUser(this);
+    }
+
+    public void exitRoom() {
+        this.currentRoom.outUser(this);
+        this.currentRoom = null;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public PrintWriter getPrintWriter() {
+        return pw;
     }
 }
