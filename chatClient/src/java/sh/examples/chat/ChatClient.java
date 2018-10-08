@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ChatClient extends Thread {
     private String ip;
@@ -53,6 +57,7 @@ public class ChatClient extends Thread {
             switch (select) {
                 case 1:
                     System.out.println("< 뒤로 가려면 \\back 입력 >");
+                    //
                     System.out.print("방 이름 : ");
                     title = keyBr.readLine();
                     pw.println(title);
@@ -60,14 +65,23 @@ public class ChatClient extends Thread {
                     roomId = Integer.parseInt(br.readLine());
                     break;
                 case 2:
+                    String info = "";
+                    info = br.readLine().trim();
+                    int size = Integer.parseInt(info);
+                    Map<Integer, RoomInfo> roomInfoMap = new HashMap<>();
+                    for (int i = 0; i < size; i++) {
+                        info = br.readLine();
+                        String[] token = info.split("|");
+                        RoomInfo roomInfo = new RoomInfo(Integer.parseInt(token[0]), token[1], Integer.parseInt(token[2]));
+                        roomInfoMap.put(roomInfo.id, roomInfo);
+                        System.out.printf("%3d. %s [%d명]", roomInfo.id, roomInfo.title, roomInfo.userSize);
+                    }
                     System.out.println("< 뒤로 가려면 \\back 입력 >");
-                    //list 보여주고
-//                    title = null;
                     System.out.print("입장할 방 번호 입력: ");
                     roomId = Integer.parseInt(keyBr.readLine());
                     pw.println(roomId);
                     pw.flush();
-                    title = br.readLine();
+                    title = roomInfoMap.get(roomId).title;
                     break;
                 case 3:
                     System.out.println("프로그램을 종료합니다.");
@@ -111,6 +125,18 @@ public class ChatClient extends Thread {
             }
         } catch (Exception ex) {
 
+        }
+    }
+
+    private class RoomInfo {
+        int id;
+        String title;
+        int userSize;
+
+        public RoomInfo(int id, String title, int userSize) {
+            this.id = id;
+            this.title = title;
+            this.userSize = userSize;
         }
     }
 }

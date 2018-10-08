@@ -19,6 +19,14 @@ public class Room {
         return id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public int getUserSize() {
+        return users.size();
+    }
+
     public void inUser(User user) {
         this.users.add(user);
     }
