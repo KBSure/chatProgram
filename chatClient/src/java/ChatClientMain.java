@@ -1,4 +1,4 @@
-public class ChatServer {
+public class ChatClientMain {
     public static void main(String[] args) {
 
     }
