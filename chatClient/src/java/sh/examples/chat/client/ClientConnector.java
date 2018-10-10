@@ -35,11 +35,13 @@ public class ClientConnector extends Thread {
                 switch (selectMainMenu()) {
                     case 1:
                         while (true) {
-                            System.out.print("방 이름 (로비로 돌아가려면 \\back 입력) : ");
+                            System.out.print("\n방 이름 (로비로 돌아가려면 \\back 입력) : ");
                             // TODO 인원수제한 설정 추가하기
                             String title = keyBr.readLine().trim();
 
                             if ("\\back".equals(title)) {
+                                pw.println("BACK");
+                                pw.flush();
                                 break;
                             }
 
@@ -48,7 +50,7 @@ public class ClientConnector extends Thread {
                                 continue;
                             }
 
-                            System.out.println("\n\""+title+"\" 로 새 방을 만드시겠습니까?");
+                            System.out.println("\n\""+title+"\" (으)로 새 방을 만드시겠습니까?");
                             System.out.print("[Y/N] > ");
                             String yn = keyBr.readLine().trim();
                             if (!"Y".equals(yn.toUpperCase())) {
@@ -67,12 +69,13 @@ public class ClientConnector extends Thread {
                                 }
                             }
                             enterRoom(roomId, title);
+                            break;
                         }
 
                         break;
 
                     case 2:
-                        String info = "";
+                        /*String info = "";
                         info = br.readLine().trim();
                         int size = Integer.parseInt(info);
                         Map<Integer, RoomInfo> roomInfoMap = new HashMap<>();
@@ -88,7 +91,7 @@ public class ClientConnector extends Thread {
                         int roomId = Integer.parseInt(keyBr.readLine());
                         pw.println(roomId);
                         pw.flush();
-                        String title = roomInfoMap.get(roomId).title;
+                        String title = roomInfoMap.get(roomId).title;*/
                         break;
                     case 3:
                         printExitMessage();
@@ -133,7 +136,13 @@ public class ClientConnector extends Thread {
         }
 
         if ("\\quit".equals(nickname)) {
-            return false;
+            pw.println("EXIT");
+            pw.flush();
+            while (true) {
+                if ("EXIT".equals(br.readLine())) {
+                    return false;
+                }
+            }
         }
 
         pw.println("NICKNAME");
@@ -175,27 +184,28 @@ public class ClientConnector extends Thread {
             }
             break;
         }
+        pw.println("MAIN_MENU");
         pw.println(selected);
         pw.flush();
         return selected;
     }
 
-    private void enterRoom(int roomId, String title) {
-        String line = null;
-        System.out.println("<" + title + ">에 입장했습니다.");
+    private void enterRoom(int roomId, String title) throws IOException {
+        System.out.println("\n*********************************");
+        System.out.println("*********************************");
+        System.out.println("\"" + title + "\"에 입장하였습니다.");
+        System.out.println("(나가기: \\quit)\n");
 
         InputHandler inputHandler = new InputHandler(br);
         inputHandler.start();
 
-        try {
-            System.out.print("> ");
-            while ((line = keyBr.readLine()) != null) {
-                pw.println(line);
-                pw.flush();
-                System.out.print("> ");
+        String line;
+        while ((line = keyBr.readLine()) != null) {
+            pw.println(line);
+            pw.flush();
+            if ("\\quit".equals(line.trim())) {
+                break;
             }
-        } catch (Exception ex) {
-
         }
     }
 

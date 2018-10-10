@@ -1,4 +1,4 @@
-package bs.examples.chat;
+package bs.examples.chat.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +37,13 @@ public class Room {
 
     public List<User> getUserList() {
         return users;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

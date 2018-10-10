@@ -1,4 +1,7 @@
-package bs.examples.chat;
+package bs.examples.chat.service;
+
+import bs.examples.chat.domain.Room;
+import bs.examples.chat.domain.User;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -12,8 +15,8 @@ public class MessageCenter {
         this.roomManager = roomManager;
     }
 
-    public void broadcast(int id, String message) {
-        Room targetRoom = roomManager.getRoom(id);
+    public void broadcast(int roomId, String message) {
+        Room targetRoom = roomManager.getRoom(roomId);
         List<User> userList = targetRoom.getUserList();
         for (User user : userList) {
             PrintWriter pw = user.getPrintWriter();

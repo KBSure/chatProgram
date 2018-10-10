@@ -1,4 +1,7 @@
-package bs.examples.chat;
+package bs.examples.chat.service;
+
+import bs.examples.chat.domain.Room;
+import bs.examples.chat.domain.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ public class RoomManager {
         Room room = new Room(title);
         user.enterRoom(room);
         roomMap.put(room.getId(), room);
+        System.out.printf("[%s] created %s\n", Thread.currentThread().getName(), room);
         return room.getId();
     }
 
