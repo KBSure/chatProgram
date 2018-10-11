@@ -24,6 +24,7 @@ public class RoomManager {
     }
 
     public void removeRoom(int id) {
+        System.out.printf("[%s] removed %s\n", Thread.currentThread().getName(), roomMap.get(id));
         roomMap.remove(id);
     }
 
@@ -31,14 +32,11 @@ public class RoomManager {
         return roomMap.get(id);
     }
 
-    public List<String> getRoomList() {
-        List<String> roomInfos = new ArrayList<>();
+    public List<Room> getRoomList() {
+        List<Room> rooms = new ArrayList<>();
         for (Integer key : roomMap.keySet()) {
-            StringBuilder info = new StringBuilder();
-            // 방번호|제목|인원수
-            info.append(key).append("|").append(roomMap.get(key).getTitle()).append("|").append(roomMap.get(key).getUserSize());
-            roomInfos.add(info.toString());
+            rooms.add(roomMap.get(key));
         }
-        return roomInfos;
+        return rooms;
     }
 }

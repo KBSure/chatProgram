@@ -1,12 +1,16 @@
 package bs.examples.chat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Room {
     private static int count;
     private int id;
     private String title;
+
     private List<User> users;
 
     public Room(String title) {

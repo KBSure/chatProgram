@@ -1,12 +1,15 @@
 package bs.examples.chat.service;
 
+import bs.examples.chat.domain.Room;
 import bs.examples.chat.domain.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class Handler extends Thread{
     private MessageCenter messageCenter;
@@ -60,37 +63,51 @@ public class Handler extends Thread{
                             startConversation();
                             break;
                         case 2:
+                            line = br.readLine();
+                            if ("ROOM_LIST".equals(line)) {
+                                List<Room> roomList = roomManager.getRoomList();
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                pw.println("ROOM_LIST");
+                                pw.println(roomList.size());
+                                for (Room room : roomList) {
+                                    String json = objectMapper.writeValueAsString(room);
+                                    pw.println(json);
+                                }
+                                pw.flush();
+                            }
+
+                            String s;
+                            while ((s = br.readLine()) != null) {
+                                if ("BACK".equals(s)) {
+                                    break;
+                                }
+                                if ("SELECT_ROOM".equals(s)) {
+                                    int roomId = Integer.parseInt(br.readLine());
+                                    Room selectedRoom = roomManager.getRoom(roomId);
+                                    user.enterRoom(selectedRoom);
+                                    pw.println("JOINED");
+                                    pw.println(selectedRoom.getTitle());
+                                    pw.flush();
+                                    startConversation();
+                                    break;
+                                }
+                            }
                             break;
                         case 3:
                             System.out.printf("[%s] connection closed\n", Thread.currentThread().getName());
                             return;
                     }
                 }
-                /*
-                if (select == 2) {
-                    List<String> roomInfos = roomManager.getRoomList();
-                    pw.println(roomInfos.size());
-                    for (String info : roomInfos) {
-                        pw.println(info);
-                    }
-                    pw.flush();
-                    // 답변을 받아야되
-                    int roomId = Integer.parseInt(br.readLine());
-                    // 유저를 방에 입장시켜
-                    Room room = roomManager.getRoom(roomId);
-                    user.enterRoom(room);
-                }*/
             }
-
-
-        } catch (IOException e) {}
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void startConversation() throws IOException {
-        System.out.printf("[%s] start conversation\n", Thread.currentThread().getName());
+        System.out.printf("[%s] enter room %s\n", Thread.currentThread().getName(), user);
 
         String format = String.format("[%s] ", user.getNickname());
-        int roomId = user.getCurrentRoom().getId();
+        Room currentRoom = user.getCurrentRoom();
+        int roomId = currentRoom.getId();
         String line;
         while ((line = br.readLine()) != null) {
             if ("\\quit".equals(line)) {
@@ -98,6 +115,9 @@ public class Handler extends Thread{
                 pw.flush();
                 System.out.printf("[%s] exit room %s\n", Thread.currentThread().getName(), user);
                 user.exitRoom();
+                if (currentRoom.getUserSize() == 0) {
+                    roomManager.removeRoom(roomId);
+                }
                 return;
             }
             messageCenter.broadcast(roomId, format + line);

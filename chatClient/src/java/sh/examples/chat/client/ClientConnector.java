@@ -1,12 +1,13 @@
 package sh.examples.chat.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import sh.examples.chat.domain.Room;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ClientConnector extends Thread {
     private String ip;
@@ -32,6 +33,7 @@ public class ClientConnector extends Thread {
             if (!registerNickname()) return;
 
             while (true) {
+                System.out.println("?....");
                 switch (selectMainMenu()) {
                     case 1:
                         while (true) {
@@ -71,27 +73,63 @@ public class ClientConnector extends Thread {
                             enterRoom(roomId, title);
                             break;
                         }
-
                         break;
 
                     case 2:
-                        /*String info = "";
-                        info = br.readLine().trim();
-                        int size = Integer.parseInt(info);
-                        Map<Integer, RoomInfo> roomInfoMap = new HashMap<>();
-                        for (int i = 0; i < size; i++) {
-                            info = br.readLine();
-                            String[] token = info.split("|");
-                            RoomInfo roomInfo = new RoomInfo(Integer.parseInt(token[0]), token[1], Integer.parseInt(token[2]));
-                            roomInfoMap.put(roomInfo.id, roomInfo);
-                            System.out.printf("%3d. %s [%d명]", roomInfo.id, roomInfo.title, roomInfo.userSize);
-                        }
-                        System.out.println("< 로비로 돌아가려면 \\back 입력 >");
-                        System.out.print("입장할 방 번호 입력: ");
-                        int roomId = Integer.parseInt(keyBr.readLine());
-                        pw.println(roomId);
+                        pw.println("ROOM_LIST");
                         pw.flush();
-                        String title = roomInfoMap.get(roomId).title;*/
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        while (true) {
+                            if ("ROOM_LIST".equals(br.readLine())) {
+                                System.out.println("\n============ 방 목록 ============");
+                                int roomListSize = Integer.parseInt(br.readLine());
+                                if (roomListSize == 0) {
+                                    System.out.println("현재 개설된 방이 없습니다.");
+                                    System.out.println("(뒤로가려면 \"\\back\" 입력)");
+                                    while (true) {
+                                        String line = keyBr.readLine().trim();
+                                        if ("\\back".equals(line.toLowerCase())) {
+                                            pw.println("BACK");
+                                            pw.flush();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                for (int i = 0; i < roomListSize; i++) {
+                                    String line = br.readLine();
+                                    Room room = objectMapper.readValue(line, Room.class);
+                                    System.out.printf("%3d. %s [%d명]", room.getId(), room.getTitle(), room.getUserSize());
+                                }
+                                System.out.println();
+                                int roomId;
+                                while (true) {
+                                    System.out.print("\n번호 선택 > ");
+                                    try {
+                                        roomId = Integer.parseInt(keyBr.readLine().trim());
+                                    } catch (NumberFormatException ex) {
+                                        System.out.println("\n[WARNING] 유효하지 않은 번호 선택\n");
+                                        continue;
+                                    }
+//                                    if (roomId < 0 || selected > 3) {
+//                                        System.out.println("\n[WARNING] 유효하지 않은 번호 선택\n");
+//                                        continue;
+//                                    }
+                                    //입장시키기
+                                    pw.println("SELECT_ROOM");
+                                    pw.println(roomId);
+                                    pw.flush();
+                                    while (true) {
+                                        if ("JOINED".equals(br.readLine())) {
+                                            enterRoom(roomId, br.readLine());
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                break;
+                            }
+                        }
                         break;
                     case 3:
                         printExitMessage();
