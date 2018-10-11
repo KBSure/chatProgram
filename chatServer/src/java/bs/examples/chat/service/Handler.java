@@ -108,6 +108,8 @@ public class Handler extends Thread{
         String format = String.format("[%s] ", user.getNickname());
         Room currentRoom = user.getCurrentRoom();
         int roomId = currentRoom.getId();
+        messageCenter.enterNotice(roomId, user.getNickname());
+
         String line;
         while ((line = br.readLine()) != null) {
             if ("\\quit".equals(line)) {
@@ -115,6 +117,7 @@ public class Handler extends Thread{
                 pw.flush();
                 System.out.printf("[%s] exit room %s\n", Thread.currentThread().getName(), user);
                 user.exitRoom();
+                messageCenter.exitNotice(roomId, user.getNickname());
                 if (currentRoom.getUserSize() == 0) {
                     roomManager.removeRoom(roomId);
                 }

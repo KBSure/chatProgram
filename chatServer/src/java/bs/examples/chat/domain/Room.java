@@ -1,5 +1,6 @@
 package bs.examples.chat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ public class Room {
     private static int count;
     private int id;
     private String title;
-
     private List<User> users;
 
     public Room(String title) {
@@ -39,6 +39,7 @@ public class Room {
         this.users.remove(user);
     }
 
+    @JsonIgnore
     public List<User> getUserList() {
         return users;
     }

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class MessageCenter {
     private RoomManager roomManager;
-    private final String IN = "님이 입장하셨습니다.";
-    private final String OUT = "님이 퇴장하셨습니다.";
+    private final String IN = "[알림] %s님이 입장하셨습니다.";
+    private final String OUT = "[알림] %s님이 퇴장하셨습니다.";
 
     public MessageCenter(RoomManager roomManager) {
         this.roomManager = roomManager;
@@ -25,11 +25,11 @@ public class MessageCenter {
         }
     }
 
-    public void enterNotice(int id, String nickname) {
-        broadcast(id, nickname + IN);
+    public void enterNotice(int roomId, String nickname) {
+        broadcast(roomId, String.format(IN, nickname));
     }
 
-    public void exitNotice(int id, String nickname) {
-        broadcast(id, nickname + OUT);
+    public void exitNotice(int roomId, String nickname) {
+        broadcast(roomId, String.format(OUT, nickname));
     }
 }

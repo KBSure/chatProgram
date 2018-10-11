@@ -33,7 +33,6 @@ public class ClientConnector extends Thread {
             if (!registerNickname()) return;
 
             while (true) {
-                System.out.println("?....");
                 switch (selectMainMenu()) {
                     case 1:
                         while (true) {
@@ -244,18 +243,6 @@ public class ClientConnector extends Thread {
             if ("\\quit".equals(line.trim())) {
                 break;
             }
-        }
-    }
-
-    private class RoomInfo {
-        int id;
-        String title;
-        int userSize;
-
-        public RoomInfo(int id, String title, int userSize) {
-            this.id = id;
-            this.title = title;
-            this.userSize = userSize;
         }
     }
 }
