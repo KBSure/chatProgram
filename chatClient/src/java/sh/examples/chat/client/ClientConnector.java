@@ -55,9 +55,7 @@ public class ClientConnector extends Thread {
                             System.out.print("[Y/N] > ");
                             String yn = keyBr.readLine().trim();
                             if(!"Y".equals(yn.toUpperCase())){
-                                pw.println("BACK");
-                                pw.flush();
-                                break;
+                                continue;
                             }
 
                             pw.println("CREATE_ROOM");
