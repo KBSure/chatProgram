@@ -54,7 +54,7 @@ public class ClientConnector extends Thread {
                             System.out.println("\n\""+title+"\" (으)로 새 방을 만드시겠습니까?");
                             System.out.print("[Y/N] > ");
                             String yn = keyBr.readLine().trim();
-                            if (!"Y".equals(yn.toUpperCase())) {
+                            if(!"Y".equals(yn.toUpperCase())){
                                 continue;
                             }
 
@@ -103,17 +103,31 @@ public class ClientConnector extends Thread {
                                 System.out.println();
                                 int roomId;
                                 while (true) {
+                                    String line2 = "";
                                     System.out.print("\n번호 선택 > ");
                                     try {
-                                        roomId = Integer.parseInt(keyBr.readLine().trim());
+                                        line2 = keyBr.readLine().trim();
+                                        roomId = Integer.parseInt(line2);
                                     } catch (NumberFormatException ex) {
+                                        if ("\\back".equals(line2.toLowerCase())) {
+                                            pw.println("BACK");
+                                            pw.flush();
+                                            break;
+                                        }
                                         System.out.println("\n[WARNING] 유효하지 않은 번호 선택\n");
+                                        System.out.println("(로비로 돌아가려면 \"\\back\" 입력)\n");
                                         continue;
                                     }
-//                                    if (roomId < 0 || selected > 3) {
-//                                        System.out.println("\n[WARNING] 유효하지 않은 번호 선택\n");
-//                                        continue;
-//                                    }
+                                    if(roomId > roomListSize || roomId < 1){
+                                        if ("\\back".equals(line2.toLowerCase())) {
+                                            pw.println("BACK");
+                                            pw.flush();
+                                            break;
+                                        }
+                                        System.out.println("\n[WARNING] 유효하지 않은 번호 선택\n");
+                                        System.out.println("(로비로 돌아가려면 \"\\back\" 입력)\n");
+                                        continue;
+                                    }
                                     //입장시키기
                                     pw.println("SELECT_ROOM");
                                     pw.println(roomId);
